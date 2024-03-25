@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
 const Joi = require('joi')
+const mongoose = require('mongoose')
 const express = require('express')
 const router = express.Router()
 
@@ -18,17 +18,6 @@ const Genre = mongoose.model('Genre', genreSchema)
 router.get('/', async (req, res) => {
   const genres = await Genre.find().sort('name')
   res.send(genres)
-})
-
-router.get('/:id', async (req, res) => {
-  const genre = await Genre.findById(req.params.id)
-
-  if (!genre)
-    return res
-      .status(404) //Not Found
-      .send('The genre you are looking for its not available yet... 👎')
-
-  res.send(genre)
 })
 
 router.post('/', async (req, res) => {
@@ -67,10 +56,21 @@ router.delete('/:id', async (req, res) => {
   res.send(genre)
 })
 
+router.get('/:id', async (req, res) => {
+  const genre = await Genre.findById(req.params.id)
+
+  if (!genre)
+    return res
+      .status(404) //Not Found
+      .send('The genre you are looking for its not available yet... 👎')
+
+  res.send(genre)
+})
+
 
 function validateGenre(genre) {
   const schema = Joi.object({
-    name: Joi.string().min(3).max(20).required(),
+    name: Joi.string().min(5).max(50).required(),
   })
   return schema.validate(genre)
 }
